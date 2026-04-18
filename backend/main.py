@@ -107,16 +107,27 @@ def recommend_career(user_profile: UserProfile):
 
             "confidence_score": result.get("confidence_score"),
 
+            "match_score": result.get("match_score"),  # 🔥 NEW
+
+            "insights": result.get("insights"),
+
+            "career_dna_analysis": result.get("career_dna_analysis"),
+
             "skill_gap": result.get("skill_gap_analysis"),
 
             "roadmap": result.get("career_roadmap"),
 
             "explainability": result.get("explainability"),
 
-            "what_if_analysis": result.get("what_if_analysis")
+            "what_if_analysis": result.get("what_if_analysis"),
+
+            # 🔥 FIX
+            "career_report": result.get("career_report")
         }
 
     except Exception as e:
+        import traceback
+        traceback.print_exc()   # 🔥 full error print karega
 
         raise HTTPException(
             status_code=500,

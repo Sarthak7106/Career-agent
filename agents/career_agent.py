@@ -7,7 +7,10 @@ from agents.explainability import get_feature_importance
 from agents.what_if_engine import what_if_analysis
 from agents.report_generator import generate_career_report
 from agents.confidence_interpreter import interpret_confidence
-
+from agents.knowledge_adapter import get_career_data
+from agents.career_match_score import calculate_match_score
+from agents.insight_generator import generate_insights
+from agents.career_dna_analyser import analyze_career_dna
 
 def calculate_readiness_score(confidence_score, gap_percentage):
     """
@@ -31,10 +34,13 @@ class CareerAgent:
         confidence = prediction_result["confidence"]
         top_predictions = prediction_result["top_predictions"]
 
-        confidence_info = interpret_confidence(confidence)
-        print("CONFIDENCE INFO:", confidence_info)
+        # 🔥 FIX: pass top_predictions
+        confidence_info = interpret_confidence(confidence, top_predictions)
 
-        # -------- FIX: correctly extract skills --------
+        # 🔥 NEW: get full career data
+        career_data = get_career_data(career)
+
+        # -------- Extract user skills --------
         user_skills = user_profile.get("user_skills") or user_profile.get("skills", [])
 
         # Step 2: Skill gap analysis
@@ -57,10 +63,14 @@ class CareerAgent:
         # Step 5: What-if analysis
         what_if = what_if_analysis(user_profile)
 
-        # Step 6: Explainability
-        importance = get_feature_importance(user_profile)
+        # 🔥 FIX: pass career_data for KB-aware explainability
+        importance = get_feature_importance(user_profile, career_data)
 
-        # -------- RESULT STRUCTURE (UNCHANGED) --------
+        match_score = calculate_match_score(user_profile, career)
+
+        dna_analysis = analyze_career_dna(user_profile, career)
+        
+        # -------- RESULT STRUCTURE --------
         result = {
 
             "status": "success",
@@ -73,6 +83,10 @@ class CareerAgent:
 
             "readiness_score": readiness_score,
 
+            "match_score": match_score,
+
+            "career_dna_analysis": dna_analysis,
+
             "top_predictions": top_predictions,
 
             "skill_gap_analysis": skill_gap,
@@ -84,9 +98,13 @@ class CareerAgent:
             "what_if_analysis": what_if
         }
 
-        # Step 7: Generate AI report
+        insights = generate_insights(result)
+        result["insights"] = insights
+
+
+        # Step 7: Generate AI report (already KB integrated)
         report = generate_career_report(result)
 
         result["career_report"] = report
-
+        
         return result

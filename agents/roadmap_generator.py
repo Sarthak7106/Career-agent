@@ -1,4 +1,6 @@
-from agents.career_knowledge_base import CAREER_ROADMAP
+# agents/roadmap_generator.py
+
+from agents.knowledge_adapter import get_roadmap
 
 
 DEFAULT_ROADMAP = {
@@ -22,10 +24,13 @@ DEFAULT_ROADMAP = {
 
 def generate_roadmap(career):
 
-    roadmap = CAREER_ROADMAP.get(career, DEFAULT_ROADMAP)
+    roadmap = get_roadmap(career)
+
+    # fallback if not found
+    if not roadmap:
+        roadmap = DEFAULT_ROADMAP
 
     return {
-
         "career": career,
         "roadmap": roadmap
     }

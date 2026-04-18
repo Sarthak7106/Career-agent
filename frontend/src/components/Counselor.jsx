@@ -60,11 +60,9 @@ export default function Counselor({ profile }) {
   const [selectedSlot, setSelectedSlot] = useState(null)
   const [booked, setBooked] = useState(false)
 
-  const aiSummary = `Student profile: Strong in ${
-    Object.entries(profile.traits).sort(([,a],[,b]) => b-a).slice(0,2).map(([t]) => t.replace('_', ' ')).join(' & ')
-  }. AI recommends ${top.title} with ${confidence} confidence. ${confidenceMsg} Skills present: ${
-    profile.skills.length > 0 ? profile.skills.join(', ') : 'Not specified'
-  }. Suggested discussion: skill development path and career transition roadmap.`
+  const aiSummary = `Student profile: Strong in ${Object.entries(profile.traits).sort(([, a], [, b]) => b - a).slice(0, 2).map(([t]) => t.replace('_', ' ')).join(' & ')
+    }. AI recommends ${top.title} with ${confidence} confidence. ${confidenceMsg} Skills present: ${profile.skills.length > 0 ? profile.skills.join(', ') : 'Not specified'
+    }. Suggested discussion: skill development path and career transition roadmap.`
 
   const handleBook = (counselor) => {
     setSelectedCounselor(counselor)
@@ -107,9 +105,8 @@ export default function Counselor({ profile }) {
         {COUNSELORS.map((c) => (
           <div
             key={c.id}
-            className={`bg-slate-900 border rounded-xl p-5 ${
-              selectedCounselor?.id === c.id ? 'border-indigo-600 ring-1 ring-indigo-600/30' : 'border-slate-700'
-            }`}
+            className={`bg-slate-900 border rounded-xl p-5 ${selectedCounselor?.id === c.id ? 'border-indigo-600 ring-1 ring-indigo-600/30' : 'border-slate-700'
+              }`}
           >
             <div className="flex items-start gap-4">
               {/* Avatar */}
@@ -130,11 +127,10 @@ export default function Counselor({ profile }) {
             </div>
             <button
               onClick={() => handleBook(c)}
-              className={`mt-4 w-full text-sm font-medium py-2 rounded-lg border ${
-                selectedCounselor?.id === c.id
+              className={`mt-4 w-full text-sm font-medium py-2 rounded-lg border ${selectedCounselor?.id === c.id
                   ? 'bg-indigo-600 border-indigo-500 text-white'
                   : 'bg-slate-800 border-slate-600 text-slate-300 hover:border-indigo-600 hover:text-white'
-              }`}
+                }`}
             >
               {selectedCounselor?.id === c.id ? '✓ Selected' : 'Book Session'}
             </button>
@@ -152,11 +148,10 @@ export default function Counselor({ profile }) {
               <button
                 key={slot}
                 onClick={() => setSelectedSlot(slot)}
-                className={`px-4 py-2 rounded-lg border text-sm ${
-                  selectedSlot === slot
+                className={`px-4 py-2 rounded-lg border text-sm ${selectedSlot === slot
                     ? 'bg-indigo-600 border-indigo-500 text-white'
                     : 'bg-slate-800 border-slate-600 text-slate-300 hover:border-indigo-500'
-                }`}
+                  }`}
               >
                 {slot}
               </button>
