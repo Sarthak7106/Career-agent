@@ -1,193 +1,151 @@
-import { useState } from 'react'
-import { getRecommendations } from '../lib/careerEngine'
+import { useState } from 'react';
+import { Star, Video, MapPin, ArrowRight, ShieldCheck } from 'lucide-react';
 
-const COUNSELORS = [
+const counselors = [
   {
     id: 1,
-    name: 'Dr. Priya Sharma',
-    specialization: 'Technology & STEM Careers',
-    experience: '12 years',
-    rating: 4.9,
-    slots: ['Mon 10:00 AM', 'Wed 2:00 PM', 'Fri 11:00 AM'],
-    avatar: 'PS',
-    domains: ['Data Science', 'Software Engineering', 'AI/ML'],
+    name: "Dr. Alok Sharma",
+    expertise: "Career Guidance & Tech",
+    rating: 4.8,
+    mode: "Online",
+    price: 999,
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alok"
   },
   {
     id: 2,
-    name: 'Mr. Arjun Mehta',
-    specialization: 'Creative & Design Careers',
-    experience: '8 years',
+    name: "Ms. Kavita Iyer",
+    expertise: "Study Abroad (US/UK)",
     rating: 4.7,
-    slots: ['Tue 11:00 AM', 'Thu 3:00 PM', 'Sat 10:00 AM'],
-    avatar: 'AM',
-    domains: ['UX Design', 'Digital Arts', 'Media'],
+    mode: "Offline",
+    price: 1499,
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Kavita"
   },
   {
     id: 3,
-    name: 'Dr. Lakshmi Nair',
-    specialization: 'Social Sciences & Education',
-    experience: '15 years',
-    rating: 4.8,
-    slots: ['Mon 2:00 PM', 'Wed 11:00 AM', 'Fri 4:00 PM'],
-    avatar: 'LN',
-    domains: ['Psychology', 'Teaching', 'Counseling'],
+    name: "Mr. Rohan Khan",
+    expertise: "Startup & UX Design",
+    rating: 4.6,
+    mode: "Online",
+    price: 799,
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rohan"
   },
   {
     id: 4,
-    name: 'Mr. Rahul Gupta',
-    specialization: 'Environment & Natural Sciences',
-    experience: '10 years',
-    rating: 4.6,
-    slots: ['Tue 9:00 AM', 'Thu 1:00 PM', 'Sat 2:00 PM'],
-    avatar: 'RG',
-    domains: ['Environmental Science', 'Sustainability', 'Biology'],
-  },
-]
-
-function RatingStars({ rating }) {
-  const full = Math.floor(rating)
-  return (
-    <span className="flex items-center gap-1 text-amber-400 text-xs">
-      {'★'.repeat(full)}{'☆'.repeat(5 - full)}
-      <span className="text-slate-400 ml-1">{rating}</span>
-    </span>
-  )
-}
-
-export default function Counselor({ profile }) {
-  const { top, confidence, confidenceMsg } = getRecommendations(profile)
-  const [selectedCounselor, setSelectedCounselor] = useState(null)
-  const [selectedSlot, setSelectedSlot] = useState(null)
-  const [booked, setBooked] = useState(false)
-
-  const aiSummary = `Student profile: Strong in ${Object.entries(profile.traits).sort(([, a], [, b]) => b - a).slice(0, 2).map(([t]) => t.replace('_', ' ')).join(' & ')
-    }. AI recommends ${top.title} with ${confidence} confidence. ${confidenceMsg} Skills present: ${profile.skills.length > 0 ? profile.skills.join(', ') : 'Not specified'
-    }. Suggested discussion: skill development path and career transition roadmap.`
-
-  const handleBook = (counselor) => {
-    setSelectedCounselor(counselor)
-    setSelectedSlot(null)
-    setBooked(false)
+    name: "Dr. Neha Gupta",
+    expertise: "Psychometric Profiling",
+    rating: 4.9,
+    mode: "Online",
+    price: 1199,
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Neha"
   }
+];
 
-  const confirmBooking = () => {
-    if (selectedSlot) setBooked(true)
-  }
+export default function Counselor() {
+  const [filter, setFilter] = useState('All');
+
+  const filteredCounselors = counselors.filter(c => filter === 'All' || c.mode === filter);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="w-1 h-8 bg-indigo-500 rounded-full"></div>
-        <div>
-          <h2 className="text-2xl font-bold text-white">Human-in-the-Loop Counseling</h2>
-          <p className="text-slate-400 text-sm mt-0.5">Connect with a career counselor for personalised guidance</p>
-        </div>
-      </div>
-
-      {/* AI Summary Card */}
-      <div className="bg-gradient-to-br from-indigo-950/50 to-slate-900 border border-indigo-800/50 rounded-xl p-6">
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-indigo-400">🤖</span>
-          <h3 className="text-base font-semibold text-white">AI-Generated Session Brief</h3>
-          <span className="ml-auto text-xs text-slate-500 bg-slate-800 px-2 py-0.5 rounded">Shared with counselor before session</span>
-        </div>
-        <p className="text-sm text-slate-300 leading-relaxed">{aiSummary}</p>
-        <div className="mt-3 flex gap-2 flex-wrap">
-          <span className="text-xs bg-indigo-900/60 text-indigo-300 px-2 py-0.5 rounded border border-indigo-700">Career: {top.title}</span>
-          <span className="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-700">Confidence: {confidence}</span>
-          <span className="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-700">Skills: {profile.skills.length}</span>
-        </div>
-      </div>
-
-      {/* Counselor List */}
-      <h3 className="text-base font-semibold text-slate-300">Available Counselors</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {COUNSELORS.map((c) => (
-          <div
-            key={c.id}
-            className={`bg-slate-900 border rounded-xl p-5 ${selectedCounselor?.id === c.id ? 'border-indigo-600 ring-1 ring-indigo-600/30' : 'border-slate-700'
-              }`}
-          >
-            <div className="flex items-start gap-4">
-              {/* Avatar */}
-              <div className="w-10 h-10 rounded-full bg-indigo-700 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                {c.avatar}
-              </div>
-              <div className="flex-1 min-w-0">
-                <h4 className="font-semibold text-white text-sm">{c.name}</h4>
-                <p className="text-xs text-indigo-400 mb-1">{c.specialization}</p>
-                <RatingStars rating={c.rating} />
-                <p className="text-xs text-slate-500 mt-1">{c.experience} experience</p>
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {c.domains.map((d) => (
-                    <span key={d} className="text-xs bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded">{d}</span>
-                  ))}
-                </div>
-              </div>
+    <div className="max-w-7xl mx-auto space-y-10 animate-in fade-in duration-700 pb-12">
+      
+      {/* Header Section */}
+      <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 to-[#0B0B13] border border-slate-800 rounded-3xl p-10 md:p-14 shadow-2xl">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none -mt-20 -mr-20"></div>
+        <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
+          <div>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-500/10 border border-indigo-500/20 rounded-full text-indigo-400 text-xs font-bold uppercase tracking-wider mb-5">
+              <ShieldCheck size={14} /> AI Verified Mentors
             </div>
-            <button
-              onClick={() => handleBook(c)}
-              className={`mt-4 w-full text-sm font-medium py-2 rounded-lg border ${selectedCounselor?.id === c.id
-                  ? 'bg-indigo-600 border-indigo-500 text-white'
-                  : 'bg-slate-800 border-slate-600 text-slate-300 hover:border-indigo-600 hover:text-white'
-                }`}
-            >
-              {selectedCounselor?.id === c.id ? '✓ Selected' : 'Book Session'}
-            </button>
+            <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-4 leading-tight">
+              Counselor <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Marketplace</span>
+            </h1>
+            <p className="text-lg text-slate-400 max-w-xl">
+              Connect with elite industry professionals and career strategists. Filter by format and book your 1-on-1 session instantly.
+            </p>
           </div>
-        ))}
-      </div>
-
-      {/* Booking Modal / Panel */}
-      {selectedCounselor && !booked && (
-        <div className="bg-slate-900 border border-indigo-700 rounded-xl p-6">
-          <h3 className="text-base font-semibold text-white mb-1">Book Session with {selectedCounselor.name}</h3>
-          <p className="text-sm text-slate-400 mb-4">Select an available time slot</p>
-          <div className="flex flex-wrap gap-3 mb-5">
-            {selectedCounselor.slots.map((slot) => (
-              <button
-                key={slot}
-                onClick={() => setSelectedSlot(slot)}
-                className={`px-4 py-2 rounded-lg border text-sm ${selectedSlot === slot
-                    ? 'bg-indigo-600 border-indigo-500 text-white'
-                    : 'bg-slate-800 border-slate-600 text-slate-300 hover:border-indigo-500'
-                  }`}
+          
+          {/* Glassmorphism Filter Panel */}
+          <div className="w-full md:w-auto bg-slate-800/40 backdrop-blur-md border border-slate-700/50 p-2 rounded-2xl flex gap-2">
+            {['All', 'Online', 'Offline'].map(f => (
+              <button 
+                key={f}
+                onClick={() => setFilter(f)}
+                className={`py-3 px-8 rounded-xl text-sm font-bold transition-all ${
+                  filter === f 
+                    ? 'bg-indigo-600 text-white shadow-[0_0_20px_rgba(79,70,229,0.4)]' 
+                    : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
+                }`}
               >
-                {slot}
+                {f}
               </button>
             ))}
           </div>
-
-          {/* AI Summary preview before confirm */}
-          <div className="bg-slate-800 border border-slate-700 rounded-lg p-4 mb-4">
-            <p className="text-xs text-slate-500 mb-2 font-semibold uppercase tracking-wider">AI Brief (sent to counselor)</p>
-            <p className="text-xs text-slate-400 leading-relaxed">{aiSummary}</p>
-          </div>
-
-          <button
-            onClick={confirmBooking}
-            disabled={!selectedSlot}
-            className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-700 disabled:text-slate-500 disabled:cursor-not-allowed text-white text-sm font-semibold px-6 py-2.5 rounded-lg"
-          >
-            Confirm Booking {selectedSlot && `· ${selectedSlot}`}
-          </button>
         </div>
-      )}
+      </div>
 
-      {/* Booking Confirmation */}
-      {booked && (
-        <div className="bg-emerald-950/40 border border-emerald-700 rounded-xl p-6 flex items-start gap-4">
-          <span className="text-emerald-400 text-2xl">✅</span>
-          <div>
-            <h3 className="text-base font-semibold text-white mb-1">Session Booked Successfully!</h3>
-            <p className="text-sm text-slate-300">
-              Your session with <span className="text-indigo-400 font-medium">{selectedCounselor.name}</span> is confirmed for{' '}
-              <span className="text-emerald-400 font-medium">{selectedSlot}</span>.
-            </p>
-            <p className="text-xs text-slate-500 mt-2">The AI session brief has been shared with the counselor in advance.</p>
+      {/* Dynamic Grid Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {filteredCounselors.map((c) => (
+          <div key={c.id} className="group relative bg-[#0f0f13] border border-slate-800 hover:border-indigo-500/50 rounded-3xl p-1 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/20">
+             
+             {/* Mode Badge - Absolute positioned */}
+             <div className={`absolute top-5 right-5 z-20 flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest backdrop-blur-md shadow-lg ${
+               c.mode === 'Online' 
+                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
+                : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+             }`}>
+               {c.mode === 'Online' ? <Video size={10} /> : <MapPin size={10} />}
+               {c.mode}
+             </div>
+
+             <div className="bg-slate-900 rounded-[22px] p-6 h-full flex flex-col relative overflow-hidden">
+                {/* Subtle background glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                
+                <div className="relative z-10">
+                  <div className="flex items-center gap-5 mb-5">
+                    <img src={c.avatar} alt={c.name} className="w-16 h-16 rounded-2xl bg-slate-800 border-2 border-slate-700 group-hover:border-indigo-400 transition-colors shadow-lg" />
+                    <div>
+                      <h3 className="text-xl font-bold text-white group-hover:text-indigo-300 transition-colors">{c.name}</h3>
+                      <div className="flex items-center gap-1.5 mt-1 bg-slate-950/50 inline-flex px-2 py-0.5 rounded-md border border-slate-800">
+                        <Star size={12} className="text-amber-400 fill-amber-400" />
+                        <span className="text-xs font-bold text-slate-300">{c.rating}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mb-6">
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Area of Expertise</p>
+                    <p className="text-sm font-medium text-slate-300">{c.expertise}</p>
+                  </div>
+
+                  <div className="flex justify-between items-end mt-auto pt-6 border-t border-slate-800/60 mb-5">
+                    <div>
+                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Session Fee</p>
+                      <p className="text-2xl font-black text-white">₹{c.price}</p>
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={() => alert("Session booked successfully!")}
+                    className="w-full relative overflow-hidden group/btn bg-slate-800 hover:bg-indigo-600 text-white border border-slate-700 hover:border-indigo-500 rounded-xl py-3.5 font-bold text-sm flex items-center justify-center gap-2 transition-all duration-300 shadow-md hover:shadow-[0_0_15px_rgba(79,70,229,0.5)]"
+                  >
+                    <span>👉 Book Session</span>
+                    <ArrowRight size={16} className="opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all" />
+                  </button>
+                </div>
+             </div>
           </div>
-        </div>
-      )}
+        ))}
+
+        {/* Empty State handling */}
+        {filteredCounselors.length === 0 && (
+          <div className="col-span-full py-20 text-center bg-slate-900/50 border border-slate-800 rounded-3xl border-dashed">
+            <p className="text-slate-400 text-lg">No counselors found matching this criteria.</p>
+          </div>
+        )}
+      </div>
+
     </div>
-  )
+  );
 }

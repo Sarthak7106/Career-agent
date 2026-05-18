@@ -7,8 +7,7 @@ const TRAIT_LABELS = {
   Interpersonal: 'Interpersonal', Intrapersonal: 'Intrapersonal', Musical: 'Musical', Bodily: 'Bodily/Kinesthetic', Naturalist: 'Naturalist',
 }
 
-export default function WhatIf({ profile, onNavigate }) {
-  const base = getRecommendations(profile)
+export default function WhatIf({ profile, predictedCareer, onNavigate }) {
   const [simProfile, setSimProfile] = useState(profile)
 
   // Reset simProfile if original profile changes
@@ -26,7 +25,7 @@ export default function WhatIf({ profile, onNavigate }) {
   const resetSimulation = () => setSimProfile(profile)
 
   const simulated = getRecommendations(simProfile)
-  const hasChanged = simulated.top.id !== base.top.id
+  const hasChanged = simulated.top.id !== predictedCareer.id
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
@@ -130,7 +129,7 @@ export default function WhatIf({ profile, onNavigate }) {
                 <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 border-t border-slate-800/80 pt-5">
                   <p className="text-xs text-indigo-400 font-bold uppercase tracking-wide mb-3">Shift Breakdown</p>
                   <p className="text-sm text-slate-300 leading-relaxed bg-indigo-950/30 p-4 rounded-xl border border-indigo-900/50">
-                    Your adjusted traits have shifted the primary recommendation from <strong>{base.top.title}</strong> to <strong>{simulated.top.title}</strong>. This suggests that leaning heavily into these modified skills will unlock this new trajectory.
+                    Your adjusted traits have shifted the primary recommendation from <strong>{predictedCareer.title}</strong> to <strong>{simulated.top.title}</strong>. This suggests that leaning heavily into these modified skills will unlock this new trajectory.
                   </p>
                 </div>
               )}

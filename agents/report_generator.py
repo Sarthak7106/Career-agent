@@ -60,5 +60,6 @@ def generate_career_report(result):
             "Improving key abilities may significantly change career outcomes. "
             "Refer to the What-If analysis section for alternative scenarios."
     }
+    
 
     return report
